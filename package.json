@@ -1,0 +1,31 @@
+{
+  "name": "applyflow",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n frontend,backend -c blue,green \"vite\" \"npm run dev --prefix backend\"",
+    "dev:frontend": "vite",
+    "dev:backend": "npm run dev --prefix backend",
+    "build": "vite build",
+    "preview": "vite preview",
+    "postinstall": "npm install --prefix backend"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
+    "@tailwindcss/vite": "^4.3.0",
+    "axios": "^1.8.3",
+    "lucide-react": "^1.17.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "react-hook-form": "^7.77.0",
+    "react-router-dom": "^7.17.0",
+    "tailwindcss": "^4.3.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.1",
+    "concurrently": "^9.1.2",
+    "vite": "^8.0.12"
+  }
+}
