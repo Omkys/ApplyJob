@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_BASE_URL } from '../lib/constants';
+import { API_BASE_URL, API_PATHS } from '../lib/constants';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -7,9 +7,8 @@ const api = axios.create({
   withCredentials: true,
 });
 
-if (import.meta.env.DEV) {
-  console.info('[ApplyFlow] API base URL:', API_BASE_URL);
-}
+console.info('[ApplyFlow] API base:', API_BASE_URL || '(relative)');
+console.info('[ApplyFlow] Templates URL:', `${API_BASE_URL}${API_PATHS.templates}`);
 
 api.interceptors.request.use((config) => {
   if (config.data instanceof FormData) {

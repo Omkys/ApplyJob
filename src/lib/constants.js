@@ -1,27 +1,27 @@
 /**
- * Normalizes the API base URL so requests always hit /api/* routes.
- *
- * Examples:
- *   /api                                    → /api
- *   https://applyjob-ix89.onrender.com      → https://applyjob-ix89.onrender.com/api
- *   https://applyjob-ix89.onrender.com/api  → https://applyjob-ix89.onrender.com/api
+ * API URL strategy:
+ *   Local:      baseURL = ''           + path /api/templates  → /api/templates (Vite proxy)
+ *   Production: baseURL = backend host + path /api/templates  → https://host/api/templates
  */
-function normalizeApiBaseUrl(url) {
-  const trimmed = url.trim().replace(/\/+$/, '');
-  if (!trimmed || trimmed === '/api') return '/api';
-  if (trimmed.endsWith('/api')) return trimmed;
-  return `${trimmed}/api`;
+function getApiBaseUrl() {
+  const url = import.meta.env.VITE_API_URL?.trim();
+
+  // Local dev — paths are relative, Vite proxies /api → localhost:5000
+  if (!url || url === '/api') {
+    return '';
+  }
+
+  // Production — use backend host only; paths always include /api/...
+  return url.replace(/\/+$/, '').replace(/\/api$/, '');
 }
 
-const rawUrl = import.meta.env.VITE_API_URL;
+export const API_BASE_URL = getApiBaseUrl();
 
-export const API_BASE_URL = rawUrl ? normalizeApiBaseUrl(rawUrl) : '/api';
-
-/** Relative paths — combined with API_BASE_URL which already includes /api */
+/** All paths include the /api prefix explicitly */
 export const API_PATHS = {
-  templates: '/templates',
-  sendEmail: '/send-email',
-  health: '/health',
+  templates: '/api/templates',
+  sendEmail: '/api/send-email',
+  health: '/api/health',
 };
 
 export const MAX_RESUME_SIZE = 5 * 1024 * 1024;
