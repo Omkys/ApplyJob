@@ -7,8 +7,11 @@ const api = axios.create({
   withCredentials: true,
 });
 
+if (import.meta.env.DEV) {
+  console.info('[ApplyFlow] API base URL:', API_BASE_URL);
+}
+
 api.interceptors.request.use((config) => {
-  // Let the browser set Content-Type for multipart/form-data (file uploads)
   if (config.data instanceof FormData) {
     delete config.headers['Content-Type'];
   } else if (!config.headers['Content-Type']) {
