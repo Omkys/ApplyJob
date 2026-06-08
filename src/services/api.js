@@ -3,8 +3,18 @@ import { API_BASE_URL } from '../lib/constants';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: { 'Content-Type': 'application/json' },
   timeout: 30000,
+  withCredentials: true,
+});
+
+api.interceptors.request.use((config) => {
+  // Let the browser set Content-Type for multipart/form-data (file uploads)
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  } else if (!config.headers['Content-Type']) {
+    config.headers['Content-Type'] = 'application/json';
+  }
+  return config;
 });
 
 api.interceptors.response.use(
