@@ -40,5 +40,6 @@ app.use(errorHandler);
 app.listen(env.port, () => {
   console.log(`ApplyFlow API → port ${env.port}`);
   console.log(`Health check  → /api/health`);
+  console.log(`SMTP test     → /api/smtp-test`);
   console.log(`CORS origins  → ${env.corsOrigins.join(', ')}`);
 });

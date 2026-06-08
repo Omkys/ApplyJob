@@ -2,6 +2,7 @@ import { supabase } from '../config/supabase.js';
 import { env } from '../config/env.js';
 import { STORAGE_BUCKETS } from '../config/database.js';
 import { AppError } from '../utils/AppError.js';
+import { logError } from '../utils/logger.js';
 
 const KNOWN_BUCKETS = [env.storageBucket, STORAGE_BUCKETS.RESUMES_LEGACY];
 
@@ -77,7 +78,13 @@ export async function downloadResume(resumeUrl, resumeName) {
   const parsed = extractPathFromUrl(resumeUrl);
 
   if (!parsed?.filePath) {
-    throw new AppError('Invalid resume URL', 400);
+    logError('supabase_download', 'Invalid resume URL — could not parse path', { resumeUrl });
+    throw new AppError(
+      'Invalid resume URL — could not parse storage path',
+      400,
+      'supabase_download',
+      resumeUrl
+    );
   }
 
   const { data, error } = await supabase.storage
@@ -85,7 +92,13 @@ export async function downloadResume(resumeUrl, resumeName) {
     .download(parsed.filePath);
 
   if (error || !data) {
-    throw new AppError(`Failed to download resume: ${error?.message}`, 500);
+    logError('supabase_download', 'Supabase storage download error', error);
+    throw new AppError(
+      `Failed to download resume: ${error?.message || 'No data returned'}`,
+      500,
+      'supabase_download',
+      error?.message
+    );
   }
 
   const buffer = Buffer.from(await data.arrayBuffer());
